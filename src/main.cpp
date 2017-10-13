@@ -91,41 +91,29 @@ int main() {
           double py = j[1]["y"];
           double psi = j[1]["psi"];
           double v_mph = j[1]["speed"]; 
-					double v=v_mph*0.44704; // m/s
-					/* References
-					ptsx (Array) - The global x positions of the waypoints.
-					ptsy (Array) - The global y positions of the waypoints. This corresponds to the z coordinate in Unity since y is the up-down direction.
-					psi (float) - The orientation of the vehicle in radians converted from the Unity format to the standard format expected in most mathemetical functions (more details below).
-					psi_unity (float) - The orientation of the vehicle in radians. This is an orientation commonly used in navigation.
-					x (float) - The global x position of the vehicle.
-					y (float) - The global y position of the vehicle.
-					steering_angle (float) - The current steering angle in radians.
-					throttle (float) - The current throttle value [-1, 1].
-					speed (float) - The current velocity in mph.
-					*/
-          /*
+	  double v=v_mph*0.44704; // m/s
           * TODO: Calculate steering angle and throttle using MPC.
           *
           * Both are in between [-1, 1].
           *
           */
 
-					//transform waypoints to car coordinate system
+	   //transform waypoints to car coordinate system
 
 				
-					int ptsx_size= ptsx.size();
-					Eigen::VectorXd waypoints_x(ptsx_size);
-					Eigen::VectorXd waypoints_y(ptsx_size);
+	  int ptsx_size= ptsx.size();
+	  Eigen::VectorXd waypoints_x(ptsx_size);
+	  Eigen::VectorXd waypoints_y(ptsx_size);
 
-					for (int i = 0; i < ptsx_size; i++) {
-						double dx = ptsx[i] - px;
+	  for (int i = 0; i < ptsx_size; i++) {
+	    double dx = ptsx[i] - px;
             double dy = ptsy[i] - py;
             waypoints_x(i) = dx * cos(psi) + dy * sin(psi);
             waypoints_y(i) = -dx * sin(psi) + dy * cos(psi);
-					}
+          }
 
-					// fit the points 
-					Eigen::VectorXd coeffs = polyfit(waypoints_x, waypoints_y, 3); 
+	   // fit the points 
+	  Eigen::VectorXd coeffs = polyfit(waypoints_x, waypoints_y, 3); 
 
 
           double cte = coeffs[0];
@@ -137,7 +125,7 @@ int main() {
           vector<double> mpc_results = mpc.Solve(state, coeffs);
           
           double steer_value = -mpc_results[0]/ deg2rad(25); // convert to [-1..1] range
-					double throttle_value = mpc_results[1];
+	  double throttle_value = mpc_results[1];
           //double steer_value =0; // convert to [-1..1] range
 					//double throttle_value = 1;
 
@@ -154,8 +142,8 @@ int main() {
 
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Green line
-					int mpc_resultssize= mpc_results.size();
-					for (int i = 2; i < mpc_resultssize; i ++) {
+	  int mpc_resultssize= mpc_results.size();
+	  for (int i = 2; i < mpc_resultssize; i ++) {
             if (i%2 == 0) {
               mpc_x_vals.push_back(mpc_results[i]);
             }
